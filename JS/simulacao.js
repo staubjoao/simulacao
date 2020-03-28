@@ -8,6 +8,16 @@ var ctx = canvas.getContext('2d');
 var width = canvas.width = 640;
 var height = canvas.height = 640;
 
+var dump = 0;
+var hour = 0;
+var day = 0;
+
+function time() {
+    ctx.font = "16px Arial";
+    ctx.fillStyle = "#0095DD";
+    ctx.fillText("dia: "+day, 570, 20);
+}
+
 function Ball(x, y, velX, velY, color, size) {
     this.x = x;
     this.y = y;
@@ -80,8 +90,6 @@ function loop() {
     while (balls.length < 5) {
         var size = 10;
         var ball = new Ball(
-            // ball position always drawn at least one ball width
-            // away from the edge of the canvas, to avoid drawing errors
             random(0 + size, width - size),
             random(0 + size, height - size),
             vel,
@@ -93,11 +101,23 @@ function loop() {
     }
 
     for (var i = 0; i < balls.length; i++) {
+        dump++;
+        if(dump == 10){
+            hour++;
+            dump = 0;
+        }else{
+
+        }
+        if(hour == 24){
+            hour = 0;
+            day++;
+        }
         balls[i].draw();
         balls[i].update();
     }
-
+    
     requestAnimationFrame(loop);
+    time();
 }
 
 loop();
