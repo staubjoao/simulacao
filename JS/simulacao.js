@@ -2,21 +2,8 @@ var canvas = document.querySelector('canvas');
 
 var ctx = canvas.getContext('2d');
 
-// var width = canvas.width = window.innerWidth;
-// var height = canvas.height = window.innerHeight;
-
-var width = canvas.width = 640;
-var height = canvas.height = 640;
-
-var dump = 0;
-var hour = 0;
-var day = 0;
-
-function time() {
-    ctx.font = "16px Arial";
-    ctx.fillStyle = "#0095DD";
-    ctx.fillText("dia: "+day, 570, 20);
-}
+var width = canvas.width;
+var height = canvas.height;
 
 function Ball(x, y, velX, velY, color, size) {
     this.x = x;
@@ -35,7 +22,7 @@ Ball.prototype.draw = function () {
 }
 
 Ball.prototype.update = function () {
-    if ((this.x + this.size) >= width) {
+    if ((this.x + this.size) >= (width)) {
         this.velX = -(this.velX);
     }
 
@@ -55,16 +42,27 @@ Ball.prototype.update = function () {
     this.y += this.velY;
 }
 
-Ball.prototype.infec = function () {
+Ball.prototype.collisionDetect = function () {
+    for (var j = 0; j < balls.length; j++) {
+        if (!(this === balls[j])) {
+            var dx = this.x - balls[j].x;
+            var dy = this.y - balls[j].y;
+            var distance = Math.sqrt(dx * dx + dy * dy);
 
+            if (distance < this.size + balls[j].size) {
+                balls[j].color = this.color = 'rgb(' + random(0, 255) + ',' + random(0, 255) + ',' + random(0, 255) + ')';
+            }
+        }
+    }
 }
 
 function random(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function ballViss(){
-    var size = 10;
+
+function ballViss() {
+    let vel = 5;
     var ball = new Ball(
         // ball position always drawn at least one ball width
         // away from the edge of the canvas, to avoid drawing errors
@@ -72,52 +70,51 @@ function ballViss(){
         random(0 + size, height - size),
         vel,
         vel,
-        'red',
+        'green',
         size
     );
     balls.push(ball);
 }
 
+// ctx.beginPath();
+// ctx.arc(200, 200, 10, 0, 2 * Math.PI);
+// ctx.stroke();
+// ctx.strokeStyle = "blue";
+// ctx.stroke();
 
+// var vel = [-2, -1, 1, 2];
+var vel = 1;
 var balls = [];
-
-var vel = 5;
+var size = 10;
 
 function loop() {
     ctx.fillStyle = 'rgba(0,0,0)';
     ctx.fillRect(0, 0, width, height);
 
-    while (balls.length < 5) {
-        var size = 10;
+    while (balls.length < 200) {
         var ball = new Ball(
             random(0 + size, width - size),
             random(0 + size, height - size),
             vel,
             vel,
+            // vel[random(0, 3)],
+            // vel[random(0, 3)],
             'blue',
             size
         );
         balls.push(ball);
     }
 
-    for (var i = 0; i < balls.length; i++) {
-        dump++;
-        if(dump == 10){
-            hour++;
-            dump = 0;
-        }else{
-
-        }
-        if(hour == 24){
-            hour = 0;
-            day++;
-        }
+    for (let i = 0; i < balls.length; i++) {
         balls[i].draw();
         balls[i].update();
+        balls[i].collisionDetect();
     }
-    
+
     requestAnimationFrame(loop);
-    time();
 }
 
+
 loop();
+
+//34
