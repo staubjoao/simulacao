@@ -49,8 +49,10 @@ Ball.prototype.collisionDetect = function () {
             var dy = this.y - balls[j].y;
             var distance = Math.sqrt(dx * dx + dy * dy);
 
-            if (distance < this.size + balls[j].size) {
-                balls[j].color = this.color = 'rgb(' + random(0, 255) + ',' + random(0, 255) + ',' + random(0, 255) + ')';
+            if (distance < 10) {
+                if(balls[j].color == "green"){
+                    balls[j].color = this.color = "green";
+                }
             }
         }
     }
@@ -60,16 +62,19 @@ function random(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+var vel = [-2, -1, 1, 2];
+// var vel = 1;
+var balls = [];
+var size = 10;
 
 function ballViss() {
-    let vel = 5;
     var ball = new Ball(
         // ball position always drawn at least one ball width
         // away from the edge of the canvas, to avoid drawing errors
         random(0 + size, width - size),
         random(0 + size, height - size),
-        vel,
-        vel,
+        vel[random(0, 3)],
+        vel[random(0, 3)],
         'green',
         size
     );
@@ -82,10 +87,6 @@ function ballViss() {
 // ctx.strokeStyle = "blue";
 // ctx.stroke();
 
-// var vel = [-2, -1, 1, 2];
-var vel = 1;
-var balls = [];
-var size = 10;
 
 function loop() {
     ctx.fillStyle = 'rgba(0,0,0)';
@@ -95,10 +96,10 @@ function loop() {
         var ball = new Ball(
             random(0 + size, width - size),
             random(0 + size, height - size),
-            vel,
-            vel,
-            // vel[random(0, 3)],
-            // vel[random(0, 3)],
+            // vel,
+            // vel,
+            vel[random(0, 3)],
+            vel[random(0, 3)],
             'blue',
             size
         );
