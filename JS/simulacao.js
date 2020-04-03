@@ -55,22 +55,27 @@ Ball.prototype.update = function () {
 }
 
 Ball.prototype.infectDetect = function () {
-    for (let j = 0; j < balls.length; j++) {
-        if (!(this === balls[j])) {
-            let dx = this.x - balls[j].x;
-            let dy = this.y - balls[j].y;
-            let distance = Math.sqrt(dx * dx + dy * dy);
-
-            if (distance < 5) {
-                if (balls[j].infec) {
-                    if (balls[j].immune) {
-
-                    } else {
-                        if (Math.random() < 0.17) {
-                            balls[j].color = this.color = "green";
-                            balls[j].infec = this.infec = true;
-                            balls[j].daysInfc = 0;
-                            control++;
+    for(let i = 0; i < balls.length; i++){
+        for (let j = 0; j < balls.length; j++) {
+            if (!(this === balls[j])) {
+                let dx = this.x - balls[j].x;
+                let dy = this.y - balls[j].y;
+                let distance = Math.sqrt(dx * dx + dy * dy);
+    
+                if (distance < 5) {
+                    if (balls[j].infec) {
+                        if (balls[j].immune) {
+                        } else {
+                            if (balls[j].life && this.life) {
+                                if (balls[j].infec) {
+                                    if (Math.random() < 0.17) {
+                                        balls[j].color = this.color = "green";
+                                        balls[j].infec = this.infec = true;
+                                        control++;
+                                    }
+                                } else {
+                                }
+                            }
                         }
                     }
                 }
@@ -89,23 +94,23 @@ Ball.prototype.contDaysInf = function () {
     }
 }
 
-lifeDetect = function () {
-    for (let i = 0; i < balls.length; i++) {
-        if (balls[i].daysInfc >= 19) {
-            let d = Math.random();
-            if (d < 0.66) {
-            } else if (d < 0.17) {
-                balls[i].color = this.color = "rgba(69, 69, 69)";
-                balls[i].life = this.life = false;
-                balls[i].infec = this.infec = false;
-            } else if (d < 0.17) {
-                balls[i].color = this.color = "red";
-                balls[i].immune = this.immune = true;
-
+Ball.prototype.lifeDetect = function () {
+    if (this.daysInfc >= 19) {
+        var r = Math.random();
+        if (this.infec) {
+            if (r < 0.17) {
+                this.color = "rgba(69, 69, 69)";
+                this.life = false;
+                this.infec = false;
+            }
+            else if (r > 0.34 && r < 0.51) {
+                this.color = "red";
+                this.immune = true;
+                this.infec = false;
             }
         }
     }
-}
+};
 
 var control = 1;
 
@@ -156,34 +161,33 @@ function loop() {
         balls.push(ball);
     }
 
-    // for (let i = 0; i < balls.length; i++) {
-    //     balls[i].draw();
-    //     balls[i].update();
-    //     balls[i].infectDetect();
-    //     lifeDetect();
-    //     for (let j = 0; j < balls.length; j++) {
-    //         a++;
-    //         if (a == 2500000) {
-    //             balls[i].contDaysInf();
-    //             a = 0;
-    //         }
-    //     }
+    for (let i = 0; i < balls.length; i++) {
+        balls[i].draw();
+        balls[i].update();
+        balls[i].infectDetect();
+        balls[i].lifeDetect();
+        for (let j = 0; j < balls.length; j++) {
+            a++;
+            if (a == numBalls * 10000) {
+                balls[i].contDaysInf();
+                a = 0;
+            }
+        }
 
-    // }
+    }
 
     requestAnimationFrame(loop);
 }
 var a = 0;
 
-
 loop();
 
-//34
-
-// ctx.beginPath();
-// ctx.arc(200, 200, 10, 0, 2 * Math.PI);
-// ctx.stroke();
-// ctx.strokeStyle = "blue";
-// ctx.stroke();
-
-//19 days die
+// var imu = 0;
+// checkImune = function(){
+//     for(let i = 0; i < balls.length; i++){
+//         if(balls[i].color == "red"){
+//             imu++;
+//         }
+//     }
+//     return imu;
+// }
